@@ -1,0 +1,4 @@
+Prší; true; 2
+Člověče nezlob se; true; 3
+Šachy; false; 2
+Poker; false; 1
