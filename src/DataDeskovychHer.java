@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class DataDeskovychHer extends JFrame {
     private JTextField txtNazevHry;
@@ -12,6 +14,7 @@ public class DataDeskovychHer extends JFrame {
     private JButton btnDalsi;
     private JButton btnUlozit;
     private JPanel MainPanel;
+    private JButton btnNovaDeskovaHra;
     private Model model;
     private int indexNacteneHry = 0;
 
@@ -69,6 +72,20 @@ public class DataDeskovychHer extends JFrame {
                 ulozDataDeskoveHry();
             }
         });
+
+        btnNovaDeskovaHra.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vytvorDataDeskoveHry();
+            }
+        });
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Main.zapisDataDoSouboru(Main.NAZEV_SOUBORU, model);
+            }
+        });
     }
 
     public JPanel getMainPanel() {
@@ -104,5 +121,15 @@ public class DataDeskovychHer extends JFrame {
             deskovaHra.setOblibenost(3);
         }
         model.setDeskovaHra(indexNacteneHry, deskovaHra);
+    }
+
+    public void vytvorDataDeskoveHry() {
+        DeskovaHra deskovaHra = new DeskovaHra("Název deskové hry", false, 2);
+        indexNacteneHry = model.getModelSize();
+        model.pridatDeskovouHru(deskovaHra);
+        zobrazitDataDeskoveHry();
+
+        btnPredchozi.setEnabled(true);
+        btnDalsi.setEnabled(false);
     }
 }

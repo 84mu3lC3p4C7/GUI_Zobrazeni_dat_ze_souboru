@@ -19,4 +19,8 @@ public class Model {
     public int getModelSize() {
         return seznamDeskovychHer.size();
     }
+
+    public void pridatDeskovouHru(DeskovaHra deskovaHra) {
+        seznamDeskovychHer.add(deskovaHra);
+    }
 }
