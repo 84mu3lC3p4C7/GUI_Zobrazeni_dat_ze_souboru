@@ -17,11 +17,13 @@ public class DataDeskovychHer extends JFrame {
     private JButton btnNovaDeskovaHra;
     private Model model;
     private int indexNacteneHry = 0;
+    private boolean ukladatData = true;
 
     public DataDeskovychHer(Model model) {
         this.model = model;
 
         if (model.getModelSize() == 0) {
+            ukladatData = false;
             JOptionPane.showMessageDialog(this, "Data deskových her jsou prázdná!");
             btnPredchozi.setEnabled(false);
             btnDalsi.setEnabled(false);
@@ -83,7 +85,9 @@ public class DataDeskovychHer extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                Main.zapisDataDoSouboru(Main.NAZEV_SOUBORU, model);
+                if (ukladatData) {
+                    Main.zapisDataDoSouboru(Main.NAZEV_SOUBORU, model);
+                }
             }
         });
     }

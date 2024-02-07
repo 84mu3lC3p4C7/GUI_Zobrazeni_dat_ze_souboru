@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +30,19 @@ public class Main {
         try (Scanner scn = new Scanner(new BufferedReader(new FileReader(nazevSouboru)))) {
             while (scn.hasNextLine()) {
                 String[] atributy = scn.nextLine().split("; ");
+                int oblibenostHry = Integer.parseInt(atributy[2]);
+
                 seznamDeskovychHer.add(new DeskovaHra(
-                        atributy[0], Boolean.parseBoolean(atributy[1]), Integer.parseInt(atributy[2])
+                        atributy[0], Boolean.parseBoolean(atributy[1]), oblibenostHry
                 ));
                 cisloRadku++;
             }
         } catch (FileNotFoundException e) {
-            System.err.println("Soubor \"" + nazevSouboru + "\" nebyl nalezen!\n" + e.getLocalizedMessage());
+            JOptionPane.showMessageDialog(dataDeskovychHer, "Soubor \"" + nazevSouboru + "\" nebyl nalezen!\n" + e.getLocalizedMessage());
         } catch (NumberFormatException e) {
-            System.err.println("Číselná data nejsou ve správném formátu na řádku č. " + cisloRadku + "\n" + e.getLocalizedMessage());
+            JOptionPane.showMessageDialog(dataDeskovychHer, "Číselná data nejsou ve správném formátu na řádku č. " + cisloRadku + "\n" + e.getLocalizedMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(dataDeskovychHer, "Data nejsou ve správném formátu na řádku č. " + cisloRadku + "\n" + e.getLocalizedMessage());
         }
         return seznamDeskovychHer;
     }

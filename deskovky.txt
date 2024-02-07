@@ -1,4 +1,1 @@
 Prší; false; 2
-Člověče nezlob se; true; 2
-Šachy; false; 2
-Poker; false; 2
