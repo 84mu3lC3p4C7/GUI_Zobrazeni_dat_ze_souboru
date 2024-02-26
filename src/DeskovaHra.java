@@ -2,17 +2,18 @@ public class DeskovaHra {
     private String nazev;
     private boolean zakoupeno;
     private int oblibenost;
+    private String chybneData;
 
-    public DeskovaHra(String nazev, boolean zakoupeno, int oblibenost) {
+    public DeskovaHra(String nazev, boolean zakoupeno, int oblibenost, String chybneData) throws NumberFormatException {
         this.nazev = nazev;
         this.zakoupeno = zakoupeno;
         if (oblibenost > 0 && oblibenost < 4) {
             this.oblibenost = oblibenost;
         }
         else {
-            System.err.println("Oblíbenost musí být v rozsahu 1-3, oblíbenost byla nastavena na 1!");
-            this.oblibenost = 1;
+            throw new NumberFormatException();
         }
+        this.chybneData = chybneData;
     }
 
     public String getNazev() {
@@ -35,12 +36,16 @@ public class DeskovaHra {
         return oblibenost;
     }
 
-    public void setOblibenost(int oblibenost) {
+    public void setOblibenost(int oblibenost) throws NumberFormatException {
         if (oblibenost > 0 && oblibenost < 4) {
             this.oblibenost = oblibenost;
         }
         else {
-            System.err.println("Oblíbenost musí být v rozsahu 1-3!");
+            throw new NumberFormatException();
         }
+    }
+
+    public String getChybneData() {
+        return chybneData;
     }
 }

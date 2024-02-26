@@ -1,1 +1,5 @@
-Prší; false; 2
+Sachy; true; 3
+Poker; false; 2
+Clovece nezlob se; true; 2
+Uno; false; 3
+Prsi; true; 1

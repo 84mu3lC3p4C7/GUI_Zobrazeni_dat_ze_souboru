@@ -23,4 +23,8 @@ public class Model {
     public void pridatDeskovouHru(DeskovaHra deskovaHra) {
         seznamDeskovychHer.add(deskovaHra);
     }
+
+    public void odebratDeskovouHru(int index) {
+        seznamDeskovychHer.remove(index);
+    }
 }

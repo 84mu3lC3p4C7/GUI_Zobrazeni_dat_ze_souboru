@@ -6,43 +6,51 @@ import java.util.Scanner;
 
 public class Main {
     public static final String NAZEV_SOUBORU = "deskovky.txt";
-    private static Model model;
     private static DataDeskovychHer dataDeskovychHer;
 
     public static void main(String[] args) {
-        model = new Model(nactiDataZeSouboru(NAZEV_SOUBORU));
-
-        dataDeskovychHer = new DataDeskovychHer(model);
-        dataDeskovychHer.setContentPane(dataDeskovychHer.getMainPanel());
-        dataDeskovychHer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        dataDeskovychHer.setSize(500, 350);
-        dataDeskovychHer.setTitle("Data deskových her");
+        dataDeskovychHer = new DataDeskovychHer();
         dataDeskovychHer.setVisible(true);
-
-        if (model.getModelSize() != 0) {
-            dataDeskovychHer.zobrazitDataDeskoveHry();
-        }
     }
 
     public static List<DeskovaHra> nactiDataZeSouboru(String nazevSouboru) {
         List<DeskovaHra> seznamDeskovychHer = new ArrayList<>();
-        int cisloRadku = 1;
         try (Scanner scn = new Scanner(new BufferedReader(new FileReader(nazevSouboru)))) {
+            int cisloRadku = 1;
             while (scn.hasNextLine()) {
-                String[] atributy = scn.nextLine().split("; ");
-                int oblibenostHry = Integer.parseInt(atributy[2]);
+                String radek = scn.nextLine();
+                String chybneData = "";
+                String nazevHry;
+                boolean zakoupeno;
+                int oblibenostHry;
 
-                seznamDeskovychHer.add(new DeskovaHra(
-                        atributy[0], Boolean.parseBoolean(atributy[1]), oblibenostHry
-                ));
+                try {
+                    String[] atributy = radek.split("; ");
+                    nazevHry = atributy[0];
+                    zakoupeno = Boolean.parseBoolean(atributy[1]);
+                    try {
+                        oblibenostHry = Integer.parseInt(atributy[2]);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(dataDeskovychHer, "Oblíbenost na řádku č. " + cisloRadku + " není v rozsahu 1-3, byla proto nastavena na 2!\n" + "Error: " +  e.getLocalizedMessage());
+                        oblibenostHry = 2;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    JOptionPane.showMessageDialog(dataDeskovychHer, "Data hry na řádku č. " + cisloRadku + " nejsou ve správném formátu, tato data nebude možné upravovat!\n" + "Error: " +  e.getLocalizedMessage());
+                    nazevHry = "Chybné data!";
+                    zakoupeno = false;
+                    oblibenostHry = 2;
+                    chybneData = radek ;
+                }
+                try {
+                    seznamDeskovychHer.add(new DeskovaHra(nazevHry, zakoupeno, oblibenostHry, chybneData));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(dataDeskovychHer, "Oblíbenost na řádku č. " + cisloRadku + " není v rozsahu 1-3, byla proto nastavena na 2!\n" + "Error: " +  e.getLocalizedMessage());
+                    seznamDeskovychHer.add(new DeskovaHra(nazevHry, zakoupeno, 2, chybneData));
+                }
                 cisloRadku++;
             }
         } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(dataDeskovychHer, "Soubor \"" + nazevSouboru + "\" nebyl nalezen!\n" + e.getLocalizedMessage());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(dataDeskovychHer, "Číselná data nejsou ve správném formátu na řádku č. " + cisloRadku + "\n" + e.getLocalizedMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            JOptionPane.showMessageDialog(dataDeskovychHer, "Data nejsou ve správném formátu na řádku č. " + cisloRadku + "\n" + e.getLocalizedMessage());
+            JOptionPane.showMessageDialog(dataDeskovychHer, "Soubor \"" + nazevSouboru + "\" nebyl nalezen!\n" + "Error: " +  e.getLocalizedMessage());
         }
         return seznamDeskovychHer;
     }
@@ -51,10 +59,14 @@ public class Main {
         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(nazevSouboru)))) {
             for (int i = 0; i < model.getModelSize(); i++) {
                 DeskovaHra deskovaHra = model.getDeskovaHra(i);
-                pw.println(deskovaHra.getNazev() + "; " + deskovaHra.isZakoupeno() + "; " + deskovaHra.getOblibenost());
+                if (deskovaHra.getChybneData().isEmpty()) {
+                    pw.println(deskovaHra.getNazev() + "; " + deskovaHra.isZakoupeno() + "; " + deskovaHra.getOblibenost());
+                } else {
+                    pw.println(deskovaHra.getChybneData());
+                }
             }
         } catch (IOException e) {
-            System.err.println("Zápis do souboru \"" + nazevSouboru + "\" nebyl úspěšný!\n" + e.getLocalizedMessage());
+            JOptionPane.showMessageDialog(dataDeskovychHer, "Zápis do souboru \"" + nazevSouboru + "\" nebyl úspěšný!\n" + "Error: " + e.getLocalizedMessage());
         }
     }
 }
